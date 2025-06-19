@@ -12,23 +12,6 @@ function renderNote(noteObj) {
     content.innerHTML = `<strong>${date}</strong><br>${noteObj.text}`;
     content.style.flexGrow = "1";
 
-    // Pin Button
-    const pinBtn = document.createElement("button");
-    pinBtn.textContent = noteObj.pinned ? "Unpin" : "Pin";
-    pinBtn.classList.add("pin-btn");
-
-    pinBtn.addEventListener("click", () => {
-        noteObj.pinned = !noteObj.pinned;
-        let notes = JSON.parse(localStorage.getItem("notes")) || [];
-        const index = notes.findIndex(n => n.time === noteObj.time);
-        if (index !== -1) {
-            notes[index].pinned = noteObj.pinned;
-            localStorage.setItem("notes", JSON.stringify(notes));
-            allNotes.innerHTML = "";
-            loadNotes();
-        }
-    });
-
     // Delete Button
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Delete";
@@ -76,15 +59,12 @@ function renderNote(noteObj) {
         });
     });
 
-    // Layout
     noteElt.style.display = "flex";
     noteElt.style.justifyContent = "space-between";
     noteElt.style.alignItems = "center";
     noteElt.style.gap = "1rem";
 
-    // Append Elements
     noteElt.appendChild(content);
-    noteElt.appendChild(pinBtn);
     noteElt.appendChild(editBtn);
     noteElt.appendChild(deleteBtn);
     allNotes.prepend(noteElt);
@@ -92,12 +72,7 @@ function renderNote(noteObj) {
 
 function loadNotes() {
     const notes = JSON.parse(localStorage.getItem("notes")) || [];
-    notes.sort((a, b) => {
-        if (a.pinned !== b.pinned) {
-            return b.pinned - a.pinned;
-        }
-        return b.time - a.time;
-    });
+    notes.sort((a, b) => b.time - a.time);
     notes.forEach(renderNote);
 }
 
@@ -110,8 +85,7 @@ function newNote() {
 
     const newNoteObj = {
         text: inputNote,
-        time: Date.now(),
-        pinned: false
+        time: Date.now()
     };
 
     renderNote(newNoteObj);
