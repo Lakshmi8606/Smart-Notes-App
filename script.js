@@ -14,5 +14,13 @@ return
     noteElt.textContent=inputNote
     allNotes.appendChild(noteElt)
     note.value=""
+
+    //saving data to localStorage
+let notes = JSON.parse(localStorage.getItem("notes")) || [];
+notes.push(inputNote)
+localStorage.setItem("notes", JSON.stringify(notes));
+
+
+
 }
 saveBtn.addEventListener("click", newNote)
